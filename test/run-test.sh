@@ -10,7 +10,8 @@
 GCOV="/usr/bin/gcov"
 LCOV="/usr/bin/lcov"
 GENHTML="/usr/bin/genhtml"
-VGCMD="/usr/bin/valgrind --leak-check=full --show-leak-kinds=all"
+VGCMD="/usr/bin/valgrind"
+VGOPTS="--leak-check=full --show-leak-kinds=all"
 
 PGUSER1=${PGUSER1:-"quarrel"}
 PGUSER2=${PGUSER2:-"quarrel"}
@@ -49,6 +50,21 @@ TESTWD=`pwd`
 BASEWD=`dirname $TESTWD`
 
 PGQUARREL="$BASEWD/pgquarrel"
+
+if [ $CLEANUP -eq 1 ]; then
+	if [ ! -f $CLUSTERPATH/test1/postmaster.pid ]; then
+		rm -rf $CLUSTERPATH/test1
+	else
+		echo "cluster 1 is running"
+		exit 1
+	fi
+	if [ ! -f $CLUSTERPATH/test2/postmaster.pid ]; then
+		rm -rf $CLUSTERPATH/test2
+	else
+		echo "cluster 2 is running"
+		exit 1
+	fi
+fi
 
 if [ "$3" = "init" ]; then
 	if [ -d $CLUSTERPATH/test1 ]; then
@@ -130,7 +146,7 @@ if [ $VALGRIND -eq 1 ]; then
 	if [ ! -f $VGCMD ]; then
 		echo "valgrind is not installed"
 	else
-		$VGCMD $PGQUARREL $VERBOSE -c test.ini
+		$VGCMD $VGOPTS $PGQUARREL $VERBOSE -c test.ini
 	fi
 	exit 0
 else
