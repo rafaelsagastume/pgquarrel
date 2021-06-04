@@ -31,6 +31,7 @@ typedef struct PQLBaseType
 	char		*align;
 	char		*storage;
 	bool		byvalue;
+	char		*subscript;
 	char		*comment;
 	char		*owner;
 	char		*acl;
@@ -81,6 +82,7 @@ typedef struct PQLRangeType
 {
 	PQLObject	obj;
 	char		*subtype;
+	char		*multirange;
 	char		*opcschemaname;
 	char		*opcname;
 	bool		opcdefault;
